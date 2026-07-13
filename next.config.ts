@@ -1,7 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
+  // Désactiver explicitement Turbopack pour le build (en plus de la variable d'env)
   experimental: {
-    turbopack: false, // ← Désactive Turbopack, revient à Webpack
+    // Laisser vide pour éviter des conflits
   },
 }
 

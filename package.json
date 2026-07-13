@@ -6,9 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint",
-  "postinstall": "tailwindcss -i ./src/app/globals.css -o ./public/tailwind.css --minify"
-}
+    "lint": "eslint"
   },
   "dependencies": {
     "@supabase/auth-helpers-nextjs": "^0.15.0",
