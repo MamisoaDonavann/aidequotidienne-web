@@ -1,65 +1,106 @@
-import Image from "next/image";
+// src/app/page.tsx
+import Link from 'next/link'
+import { createServerClientFromCookies } from '@/lib/supabase/server'
+import PrestataireCard from '@/components/providers/PrestataireCard'
+import { HiSearch, HiStar, HiShieldCheck } from 'react-icons/hi'
 
-export default function Home() {
+// Composant serveur : récupère les prestataires vedettes
+export default async function HomePage() {
+  const supabase = createServerClientFromCookies()
+  const { data: providers } = await supabase
+    .from('profiles')
+    .select('*, services(count)')
+    .eq('role', 'provider')
+    .limit(6)
+
+  const categories = [
+    { name: 'Plomberie', slug: 'plomberie', icon: '🔧' },
+    { name: 'Nettoyage', slug: 'nettoyage', icon: '🧹' },
+    { name: 'Électricité', slug: 'reparation-electrique', icon: '💡' },
+    { name: 'Jardinage', slug: 'jardinage', icon: '🌿' },
+    { name: 'Peinture', slug: 'peinture', icon: '🎨' },
+    { name: 'Déménagement', slug: 'demenagement', icon: '🚚' },
+  ]
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+    <>
+      {/* Hero avec animation */}
+      <section className="bg-hero-gradient text-white">
+        <div className="max-w-7xl mx-auto px-4 py-20 md:py-32 text-center">
+          <h1 className="text-4xl md:text-6xl font-extrabold leading-tight animate-fade-in">
+            Des services fiables, <br />
+            <span className="text-accent-500">à Madagascar</span>
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+          <p className="mt-6 text-lg md:text-xl text-blue-100 max-w-2xl mx-auto">
+            Plomberie, nettoyage, jardinage… Trouvez le prestataire qu’il vous faut en quelques clics.
           </p>
+          <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+            <Link href="/recherche" className="btn-primary bg-white text-primary-700 hover:bg-gray-100 px-8 py-3 rounded-full font-semibold shadow-2xl">
+              <HiSearch className="inline mr-2" />
+              Trouver un prestataire
+            </Link>
+            <Link href="/auth/signup?role=provider" className="btn-primary bg-accent-500 hover:bg-accent-600 px-8 py-3 rounded-full font-semibold">
+              Devenir prestataire
+            </Link>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* Pourquoi nous choisir */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold text-primary-800">Pourquoi AideQuotidienne ?</h2>
+          <div className="grid md:grid-cols-3 gap-8 mt-12">
+            {[
+              { icon: <HiShieldCheck className="w-8 h-8 text-accent-500" />, title: 'Prestataires vérifiés', desc: 'Profils validés et évalués par la communauté.' },
+              { icon: <HiSearch className="w-8 h-8 text-accent-500" />, title: 'Recherche facile', desc: 'Filtrez par catégorie et ville pour trouver le bon artisan.' },
+              { icon: <HiStar className="w-8 h-8 text-accent-500" />, title: 'Avis transparents', desc: 'Lisez les retours d’expérience des clients avant de réserver.' },
+            ].map((item, i) => (
+              <div key={i} className="glass-card p-6 rounded-2xl hover:-translate-y-1 transition">
+                <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-accent-100 text-accent-600 mb-4">
+                  {item.icon}
+                </div>
+                <h3 className="text-xl font-semibold">{item.title}</h3>
+                <p className="text-gray-500 mt-2">{item.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
-      </main>
-    </div>
-  );
+      </section>
+
+      {/* Catégories populaires */}
+      <section className="py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto px-4">
+          <h2 className="text-3xl font-bold text-center text-primary-800">Catégories populaires</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mt-8">
+            {categories.map((cat) => (
+              <Link
+                key={cat.slug}
+                href={`/recherche?categorie=${cat.slug}`}
+                className="group bg-white p-5 rounded-2xl shadow-sm hover:shadow-md transition text-center"
+              >
+                <span className="text-4xl group-hover:scale-110 transition-transform block mb-2">{cat.icon}</span>
+                <span className="font-medium text-gray-700">{cat.name}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Prestataires en vedette */}
+      <section className="py-16 bg-white">
+        <div className="max-w-7xl mx-auto px-4">
+          <h2 className="text-3xl font-bold text-primary-800 mb-10 text-center">Prestataires recommandés</h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {providers?.map((provider) => (
+              <PrestataireCard key={provider.id} provider={provider} />
+            ))}
+          </div>
+          <div className="text-center mt-10">
+            <Link href="/recherche" className="btn-primary">Voir tous les prestataires</Link>
+          </div>
+        </div>
+      </section>
+    </>
+  )
 }
