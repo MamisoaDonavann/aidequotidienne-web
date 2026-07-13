@@ -1,13 +1,12 @@
-// src/components/ui/Footer.tsx
 export default function Footer() {
   return (
-    <footer className="bg-gray-50 border-t mt-auto">
-      <div className="max-w-7xl mx-auto px-4 py-8 text-center text-gray-500 text-sm">
-        <p>© {new Date().getFullYear()} AideQuotidienne – Services de confiance à Madagascar</p>
-        <div className="flex justify-center gap-4 mt-2">
-          <a href="#" className="hover:text-primary-600">À propos</a>
-          <a href="#" className="hover:text-primary-600">Confidentialité</a>
-          <a href="#" className="hover:text-primary-600">Conditions</a>
+    <footer className="mt-20 bg-gradient-to-b from-white to-gray-50 border-t border-gray-100">
+      <div className="max-w-7xl mx-auto px-4 py-10 flex flex-col md:flex-row justify-between items-center text-sm text-gray-500">
+        <p>© {new Date().getFullYear()} AideQuotidienne – Madagascar</p>
+        <div className="flex gap-6 mt-2 md:mt-0">
+          <a href="#" className="hover:text-primary-600 transition">À propos</a>
+          <a href="#" className="hover:text-primary-600 transition">Confidentialité</a>
+          <a href="#" className="hover:text-primary-600 transition">Conditions</a>
         </div>
       </div>
     </footer>

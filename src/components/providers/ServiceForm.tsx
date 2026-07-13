@@ -63,7 +63,6 @@ export default function ServiceForm({
 
     if (error) {
       toast.error('Erreur lors de l’enregistrement.')
-      console.error(error)
     } else {
       toast.success(service ? 'Service mis à jour.' : 'Service créé.')
       onSuccess()
@@ -72,27 +71,39 @@ export default function ServiceForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white border p-6 rounded-2xl space-y-4">
-      <h3 className="text-lg font-semibold">{service ? 'Modifier le service' : 'Nouveau service'}</h3>
+    <form onSubmit={handleSubmit} className="bg-white/80 backdrop-blur-md rounded-3xl p-8 shadow-lg border border-white/80 space-y-5">
+      <h3 className="text-xl font-semibold text-gray-800">
+        {service ? 'Modifier le service' : 'Nouveau service'}
+      </h3>
       <Input label="Titre *" value={title} onChange={(e) => setTitle(e.target.value)} required />
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-        <textarea className="input-field" value={description} onChange={(e) => setDescription(e.target.value)} rows={3} />
+        <label className="block text-sm font-medium text-gray-700 mb-1.5 ml-1">Description</label>
+        <textarea
+          className="w-full px-5 py-3.5 bg-white border border-gray-200 rounded-2xl text-gray-700 placeholder-gray-400 outline-none focus:border-primary-400 focus:ring-4 focus:ring-primary-500/10 transition"
+          rows={3}
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
       </div>
       <div className="grid grid-cols-2 gap-4">
-        <Input label="Prix *" type="number" value={price} onChange={(e) => setPrice(e.target.value)} required />
+        <Input label="Prix (FCFA) *" type="number" value={price} onChange={(e) => setPrice(e.target.value)} required />
         <Input label="Durée (min)" type="number" value={duration} onChange={(e) => setDuration(e.target.value)} />
       </div>
       <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Catégorie *</label>
-        <select className="input-field" value={categoryId} onChange={(e) => setCategoryId(e.target.value)} required>
+        <label className="block text-sm font-medium text-gray-700 mb-1.5 ml-1">Catégorie *</label>
+        <select
+          className="w-full px-5 py-3.5 bg-white border border-gray-200 rounded-2xl text-gray-700 outline-none focus:border-primary-400 focus:ring-4 focus:ring-primary-500/10 transition"
+          value={categoryId}
+          onChange={(e) => setCategoryId(e.target.value)}
+          required
+        >
           <option value="">Sélectionnez une catégorie</option>
           {categories.map((cat) => (
             <option key={cat.id} value={cat.id}>{cat.name}</option>
           ))}
         </select>
       </div>
-      <div className="flex gap-3">
+      <div className="flex gap-3 pt-2">
         <Button type="submit" isLoading={loading}>Enregistrer</Button>
         <Button variant="ghost" type="button" onClick={onCancel}>Annuler</Button>
       </div>

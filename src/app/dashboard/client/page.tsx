@@ -1,4 +1,3 @@
-// src/app/dashboard/client/page.tsx
 'use client'
 
 import { useEffect, useState } from 'react'
@@ -30,19 +29,20 @@ export default function ClientDashboard() {
   }, [])
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8 animate-fade-in">
-      <h1 className="text-3xl font-bold text-primary-800 mb-6">Mes réservations</h1>
+    <div className="max-w-5xl mx-auto px-4 py-12 animate-fade-in">
+      <h1 className="text-3xl font-bold text-gray-800 mb-2">Mes réservations</h1>
+      <p className="text-gray-500 mb-8">Suivez l'état de vos demandes de service.</p>
 
       {loading ? (
         <div className="space-y-4">
           {[...Array(3)].map((_, i) => (
-            <div key={i} className="bg-gray-100 h-24 rounded-2xl animate-pulse" />
+            <div key={i} className="bg-white/80 h-28 rounded-2xl animate-pulse" />
           ))}
         </div>
       ) : bookings.length === 0 ? (
-        <div className="text-center py-16 text-gray-500">
-          <HiCalendar className="mx-auto h-12 w-12 mb-3" />
-          <p className="text-xl">Aucune réservation pour l’instant</p>
+        <div className="text-center py-20 text-gray-400">
+          <HiCalendar className="mx-auto h-12 w-12 mb-4" />
+          <p className="text-xl">Aucune réservation</p>
           <p className="mt-2">Recherchez un prestataire et réservez un service.</p>
         </div>
       ) : (
@@ -50,7 +50,7 @@ export default function ClientDashboard() {
           {bookings.map((b) => (
             <div
               key={b.id}
-              className="bg-white rounded-2xl border p-5 flex flex-col md:flex-row md:items-center justify-between gap-3 hover:shadow-md transition"
+              className="bg-white/70 backdrop-blur-md rounded-2xl p-5 shadow-sm border border-gray-100 flex flex-col md:flex-row md:items-center justify-between gap-4 hover:shadow-md transition"
             >
               <div className="flex-1">
                 <p className="font-semibold text-lg">{b.service?.title || 'Service'}</p>
@@ -66,11 +66,11 @@ export default function ClientDashboard() {
                   {b.scheduled_time && ` à ${b.scheduled_time.slice(0, 5)}`}
                 </p>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-4">
                 <BookingStatusBadge status={b.status} />
                 <Link
                   href={`/messages/${b.id}`}
-                  className="text-primary-600 hover:underline text-sm"
+                  className="text-primary-600 hover:underline text-sm font-medium"
                 >
                   Message
                 </Link>

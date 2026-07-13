@@ -1,12 +1,11 @@
-// src/app/recherche/page.tsx
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import PrestataireCard from '@/components/providers/PrestataireCard'
+import { HiSearch, HiX } from 'react-icons/hi'
 import Input from '@/components/ui/Input'
-import { HiFilter, HiX } from 'react-icons/hi'
 
 const supabase = createClient()
 
@@ -37,7 +36,6 @@ export default function SearchPage() {
     if (location) query = query.eq('location', location)
     if (search) query = query.ilike('full_name', `%${search}%`)
 
-    // Filtre par catégorie (via jointure sur services)
     if (category) {
       const { data: services } = await supabase
         .from('services')
@@ -45,7 +43,7 @@ export default function SearchPage() {
         .eq('categories.slug', category)
       const providerIds = [...new Set(services?.map((s) => s.provider_id))]
       if (providerIds.length > 0) query = query.in('id', providerIds)
-      else query = query.limit(0) // aucun prestataire pour cette catégorie
+      else query = query.limit(0)
     }
 
     const { data, error } = await query.limit(20)
@@ -57,7 +55,6 @@ export default function SearchPage() {
     fetchProviders()
   }, [fetchProviders])
 
-  // Mettre à jour l'URL avec les paramètres
   useEffect(() => {
     const params = new URLSearchParams()
     if (category) params.set('categorie', category)
@@ -71,40 +68,43 @@ export default function SearchPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8 animate-fade-in">
-      <h1 className="text-3xl font-bold text-primary-800 mb-6">Rechercher un prestataire</h1>
+    <div className="max-w-7xl mx-auto px-4 py-12 animate-fade-in">
+      <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-2">Rechercher un prestataire</h1>
+      <p className="text-gray-500 mb-8">Filtrez par catégorie et ville pour trouver l'artisan idéal.</p>
 
       {/* Filtres */}
-      <div className="bg-white p-5 rounded-2xl shadow-sm border border-gray-100 mb-8">
+      <div className="bg-white/70 backdrop-blur-xl rounded-3xl p-6 shadow-lg shadow-gray-200/50 border border-white/80 mb-10">
         <div className="flex flex-col md:flex-row gap-4 items-end">
-          <Input
-            label="Recherche par nom"
-            placeholder="Nom du prestataire"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="flex-1"
-          />
+          <div className="flex-1 w-full">
+            <Input
+              label="Recherche par nom"
+              placeholder="Nom du prestataire"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              icon={<HiSearch className="w-5 h-5" />}
+            />
+          </div>
           <div className="w-full md:w-48">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Catégorie</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5 ml-1">Catégorie</label>
             <select
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="input-field"
+              className="w-full px-5 py-3.5 bg-white border border-gray-200 rounded-2xl text-gray-700 outline-none focus:border-primary-400 focus:ring-4 focus:ring-primary-500/10 transition"
             >
-              <option value="">Toutes catégories</option>
+              <option value="">Toutes</option>
               {categories.map((c) => (
                 <option key={c.slug} value={c.slug}>{c.name}</option>
               ))}
             </select>
           </div>
           <div className="w-full md:w-48">
-            <label className="block text-sm font-medium text-gray-700 mb-1">Ville</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5 ml-1">Ville</label>
             <select
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              className="input-field"
+              className="w-full px-5 py-3.5 bg-white border border-gray-200 rounded-2xl text-gray-700 outline-none focus:border-primary-400 focus:ring-4 focus:ring-primary-500/10 transition"
             >
-              <option value="">Toute ville</option>
+              <option value="">Toutes</option>
               {locations.map((loc) => (
                 <option key={loc} value={loc}>{loc}</option>
               ))}
@@ -112,7 +112,7 @@ export default function SearchPage() {
           </div>
           <button
             onClick={clearFilters}
-            className="text-primary-600 hover:text-primary-800 font-medium text-sm flex items-center gap-1"
+            className="text-primary-600 hover:text-primary-800 font-medium text-sm flex items-center gap-1 pb-1"
           >
             <HiX size={16} />
             Réinitialiser
@@ -122,19 +122,19 @@ export default function SearchPage() {
 
       {/* Résultats */}
       {loading ? (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {[...Array(6)].map((_, i) => (
-            <div key={i} className="bg-gray-100 rounded-2xl h-40 animate-pulse" />
+            <div key={i} className="bg-white/80 rounded-2xl h-40 animate-pulse shadow-sm" />
           ))}
         </div>
       ) : providers.length === 0 ? (
-        <div className="text-center py-20 text-gray-500">
-          <HiFilter className="mx-auto h-12 w-12 mb-3" />
+        <div className="text-center py-20 text-gray-400">
+          <HiSearch className="mx-auto h-12 w-12 mb-4" />
           <p className="text-xl">Aucun prestataire trouvé</p>
           <p className="mt-2">Modifiez vos filtres et réessayez.</p>
         </div>
       ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {providers.map((provider) => (
             <PrestataireCard key={provider.id} provider={provider} />
           ))}

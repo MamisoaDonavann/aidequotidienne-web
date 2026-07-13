@@ -1,14 +1,12 @@
-// src/app/prestataire/[id]/page.tsx
 import { notFound } from 'next/navigation'
 import { createServerClientFromCookies } from '@/lib/supabase/server'
 import ServiceCard from '@/components/providers/ServiceCard'
 import ReviewList from '@/components/reviews/ReviewList'
 import BookingRequestForm from '@/components/booking/BookingRequestForm'
-import { HiLocationMarker } from 'react-icons/hi'
+import { HiLocationMarker, HiStar } from 'react-icons/hi'
 
 export default async function ProviderProfilePage({ params }: { params: { id: string } }) {
-  const supabase = await createServerClientFromCookies() // ← await
-
+  const supabase = await createServerClientFromCookies()
   const { data: profile } = await supabase
     .from('profiles')
     .select('*')
@@ -36,57 +34,58 @@ export default async function ProviderProfilePage({ params }: { params: { id: st
       : 0
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8 animate-fade-in">
-      {/* En-tête profil */}
-      <div className="bg-white rounded-2xl shadow-sm border p-6 md:p-8 mb-8">
-        <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
-          <div className="relative w-32 h-32 rounded-full overflow-hidden border-4 border-primary-100 bg-gray-100">
+    <div className="max-w-6xl mx-auto px-4 py-12 animate-fade-in">
+      {/* En-tête */}
+      <div className="bg-white/80 backdrop-blur-xl rounded-3xl p-8 shadow-lg border border-white/80 mb-10">
+        <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
+          <div className="relative w-32 h-32 rounded-3xl overflow-hidden bg-gradient-to-br from-primary-100 to-primary-200 shadow-inner">
             {profile.avatar_url ? (
               <img src={profile.avatar_url} alt={profile.full_name} className="w-full h-full object-cover" />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-gray-400 text-4xl font-bold">
+              <div className="w-full h-full flex items-center justify-center text-primary-700 text-4xl font-bold">
                 {profile.full_name.charAt(0)}
               </div>
             )}
           </div>
           <div className="flex-1 text-center md:text-left">
-            <h1 className="text-3xl font-bold text-primary-800">{profile.full_name}</h1>
+            <h1 className="text-3xl font-bold text-gray-800">{profile.full_name}</h1>
             {profile.location && (
-              <p className="flex items-center justify-center md:justify-start text-gray-500 mt-1">
-                <HiLocationMarker className="mr-1" /> {profile.location}
+              <p className="flex items-center justify-center md:justify-start text-gray-500 mt-2">
+                <HiLocationMarker className="mr-1.5 h-5 w-5" /> {profile.location}
               </p>
             )}
-            {profile.bio && <p className="mt-3 text-gray-600">{profile.bio}</p>}
-            <div className="mt-3 flex items-center justify-center md:justify-start gap-2">
-              <div className="flex text-accent-500">
+            {profile.bio && <p className="mt-4 text-gray-600 max-w-xl">{profile.bio}</p>}
+            <div className="mt-4 flex items-center justify-center md:justify-start gap-2">
+              <div className="flex text-amber-500">
                 {[...Array(5)].map((_, i) => (
-                  <svg key={i} className={`w-5 h-5 ${i < Math.round(avgRating) ? 'text-accent-500' : 'text-gray-300'}`} fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
+                  <HiStar key={i} className={`w-5 h-5 ${i < Math.round(avgRating) ? 'text-amber-500' : 'text-gray-200'}`} />
                 ))}
               </div>
               <span className="text-gray-500 text-sm">{avgRating} ({reviews?.length || 0} avis)</span>
             </div>
           </div>
-          <div className="md:self-start">
+          <div className="w-full md:w-auto">
             <BookingRequestForm providerId={profile.id} />
           </div>
         </div>
       </div>
 
       {/* Services */}
-      <section className="mb-8">
-        <h2 className="text-2xl font-semibold text-primary-800 mb-4">Services proposés</h2>
-        <div className="grid md:grid-cols-2 gap-4">
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold text-gray-800 mb-6">Services proposés</h2>
+        <div className="grid md:grid-cols-2 gap-6">
           {services?.map((service) => (
             <ServiceCard key={service.id} service={service} />
           ))}
+          {(!services || services.length === 0) && (
+            <p className="text-gray-500 italic">Aucun service pour le moment.</p>
+          )}
         </div>
       </section>
 
       {/* Avis */}
       <section>
-        <h2 className="text-2xl font-semibold text-primary-800 mb-4">Avis des clients</h2>
+        <h2 className="text-2xl font-bold text-gray-800 mb-6">Avis des clients</h2>
         <ReviewList reviews={reviews || []} />
       </section>
     </div>

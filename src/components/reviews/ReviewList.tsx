@@ -8,15 +8,15 @@ type Review = Database['public']['Tables']['reviews']['Row'] & {
 
 export default function ReviewList({ reviews }: { reviews: Review[] }) {
   if (reviews.length === 0) {
-    return <p className="text-gray-500 italic">Aucun avis pour le moment.</p>
+    return <p className="text-gray-400 italic">Aucun avis pour le moment.</p>
   }
 
   return (
     <div className="space-y-4">
       {reviews.map((review) => (
-        <div key={review.id} className="bg-white rounded-xl border p-4">
+        <div key={review.id} className="bg-white/70 backdrop-blur-md rounded-2xl p-5 shadow-sm border border-gray-100">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-full bg-gray-200 overflow-hidden">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-100 to-primary-200 overflow-hidden">
               {review.reviewer?.avatar_url ? (
                 <img
                   src={review.reviewer.avatar_url}
@@ -24,29 +24,29 @@ export default function ReviewList({ reviews }: { reviews: Review[] }) {
                   className="w-full h-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-gray-500 text-sm font-bold">
+                <div className="w-full h-full flex items-center justify-center text-primary-700 text-sm font-bold">
                   {review.reviewer?.full_name?.charAt(0) || '?'}
                 </div>
               )}
             </div>
             <div>
-              <p className="font-medium">{review.reviewer?.full_name || 'Utilisateur'}</p>
-              <div className="flex items-center gap-1 text-sm">
-                <div className="flex text-accent-500">
-                  {[...Array(5)].map((_, i) => (
-                    <HiStar
-                      key={i}
-                      className={`w-4 h-4 ${i < review.rating ? 'text-accent-500' : 'text-gray-300'}`}
-                    />
-                  ))}
-                </div>
-                <span className="text-gray-500 text-xs">
+              <p className="font-medium text-gray-800">{review.reviewer?.full_name || 'Utilisateur'}</p>
+              <div className="flex items-center gap-1 mt-1">
+                {[...Array(5)].map((_, i) => (
+                  <HiStar
+                    key={i}
+                    className={`w-4 h-4 ${i < review.rating ? 'text-amber-500' : 'text-gray-200'}`}
+                  />
+                ))}
+                <span className="text-gray-400 text-xs ml-1">
                   {new Date(review.created_at).toLocaleDateString('fr-FR')}
                 </span>
               </div>
             </div>
           </div>
-          {review.comment && <p className="mt-2 text-gray-600 text-sm">{review.comment}</p>}
+          {review.comment && (
+            <p className="mt-3 text-gray-600 text-sm leading-relaxed">{review.comment}</p>
+          )}
         </div>
       ))}
     </div>

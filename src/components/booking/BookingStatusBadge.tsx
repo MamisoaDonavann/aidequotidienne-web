@@ -1,20 +1,17 @@
-// src/components/booking/BookingStatusBadge.tsx
 import { cn } from '@/lib/utils'
 
 type Props = { status: string }
 
 export default function BookingStatusBadge({ status }: Props) {
-  const baseClasses = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium capitalize'
-
   const styles: Record<string, string> = {
-    pending: 'bg-yellow-100 text-yellow-800',
-    confirmed: 'bg-blue-100 text-blue-800',
-    completed: 'bg-green-100 text-green-800',
-    cancelled: 'bg-red-100 text-red-800',
+    pending: 'bg-amber-50 text-amber-700 border border-amber-200',
+    confirmed: 'bg-blue-50 text-blue-700 border border-blue-200',
+    completed: 'bg-emerald-50 text-emerald-700 border border-emerald-200',
+    cancelled: 'bg-rose-50 text-rose-700 border border-rose-200',
   }
 
   return (
-    <span className={cn(baseClasses, styles[status] || 'bg-gray-100 text-gray-700')}>
+    <span className={cn('inline-flex items-center px-3 py-1 rounded-full text-xs font-medium capitalize', styles[status] || 'bg-gray-50 text-gray-600')}>
       {status === 'pending' && 'En attente'}
       {status === 'confirmed' && 'Confirmé'}
       {status === 'completed' && 'Terminé'}

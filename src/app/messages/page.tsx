@@ -15,7 +15,7 @@ export default function MessagesPage() {
 
   useEffect(() => {
     if (!user) return
-    const userId = user.id // TypeScript comprend maintenant que ce n'est pas null
+    const userId = user.id
 
     async function fetchConversations() {
       const { data } = await supabase
@@ -37,28 +37,36 @@ export default function MessagesPage() {
   }, [user])
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 animate-fade-in">
-      <h1 className="text-3xl font-bold text-primary-800 mb-6">Messages</h1>
+    <div className="max-w-4xl mx-auto px-4 py-12 animate-fade-in">
+      <h1 className="text-3xl font-bold text-gray-800 mb-2">Messages</h1>
+      <p className="text-gray-500 mb-8">Discutez avec vos prestataires ou clients.</p>
+
       {loading ? (
-        <p>Chargement...</p>
+        <div className="space-y-3">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="bg-white/80 h-20 rounded-2xl animate-pulse" />
+          ))}
+        </div>
       ) : conversations.length === 0 ? (
-        <div className="text-center py-16 text-gray-500">
-          <HiChat className="mx-auto h-12 w-12 mb-3" />
+        <div className="text-center py-20 text-gray-400">
+          <HiChat className="mx-auto h-12 w-12 mb-4" />
           <p className="text-xl">Aucune conversation</p>
           <p className="mt-2">Vos réservations apparaîtront ici.</p>
         </div>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-3">
           {conversations.map((c) => {
             const other = c.client_id === user?.id ? c.provider : c.client
             return (
-              <Link key={c.id} href={`/messages/${c.id}`} className="block">
-                <div className="bg-white rounded-xl border p-4 flex justify-between items-center hover:shadow-md transition">
+              <Link key={c.id} href={`/messages/${c.id}`}>
+                <div className="bg-white/70 backdrop-blur-md rounded-2xl p-5 shadow-sm border border-gray-100 flex justify-between items-center hover:shadow-md hover:-translate-y-0.5 transition-all">
                   <div>
-                    <p className="font-medium">{other?.full_name || 'Utilisateur'}</p>
+                    <p className="font-semibold text-gray-800">{other?.full_name || 'Utilisateur'}</p>
                     <p className="text-sm text-gray-500">Réservation {c.id.slice(0, 8)}</p>
                   </div>
-                  <span className="text-xs bg-gray-100 px-2 py-1 rounded-full">{c.status}</span>
+                  <span className="text-xs bg-gray-100 px-3 py-1 rounded-full font-medium text-gray-600 capitalize">
+                    {c.status}
+                  </span>
                 </div>
               </Link>
             )

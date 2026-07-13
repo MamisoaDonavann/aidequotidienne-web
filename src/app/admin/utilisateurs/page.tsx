@@ -45,46 +45,60 @@ export default function AdminUsersPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8 animate-fade-in">
-      <h1 className="text-3xl font-bold text-primary-800 mb-6">Gestion des utilisateurs</h1>
+    <div className="max-w-6xl mx-auto px-4 py-12 animate-fade-in">
+      <h1 className="text-3xl font-bold text-gray-800 mb-2">Gestion des utilisateurs</h1>
+      <p className="text-gray-500 mb-8">Modifiez les rôles et gérez les comptes.</p>
+
       {loading ? (
-        <p>Chargement...</p>
+        <div className="bg-white/80 rounded-3xl p-8 animate-pulse h-64" />
       ) : (
-        <div className="overflow-x-auto bg-white rounded-2xl shadow">
-          <table className="min-w-full text-sm">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-4 py-3 text-left">Nom</th>
-                <th className="px-4 py-3 text-left">Rôle</th>
-                <th className="px-4 py-3 text-left">Localisation</th>
-                <th className="px-4 py-3">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {users.map((u) => (
-                <tr key={u.id} className="border-t">
-                  <td className="px-4 py-3">{u.full_name}</td>
-                  <td className="px-4 py-3">
-                    <select
-                      value={u.role}
-                      onChange={(e) => updateRole(u.id, e.target.value)}
-                      className="text-xs border rounded px-2 py-1"
-                    >
-                      <option value="client">Client</option>
-                      <option value="provider">Prestataire</option>
-                      <option value="admin">Admin</option>
-                    </select>
-                  </td>
-                  <td className="px-4 py-3">{u.location || '—'}</td>
-                  <td className="px-4 py-3 text-center">
-                    <button onClick={() => deleteUser(u.id)} className="text-red-500 hover:text-red-700">
-                      <HiTrash size={18} />
-                    </button>
-                  </td>
+        <div className="bg-white/80 backdrop-blur-md rounded-3xl shadow-lg border border-white/80 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
+              <thead>
+                <tr className="bg-gray-50/80">
+                  <th className="px-6 py-4 text-left font-medium text-gray-600">Nom</th>
+                  <th className="px-6 py-4 text-left font-medium text-gray-600">Rôle</th>
+                  <th className="px-6 py-4 text-left font-medium text-gray-600">Localisation</th>
+                  <th className="px-6 py-4 text-right font-medium text-gray-600">Actions</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {users.map((u) => (
+                  <tr key={u.id} className="hover:bg-gray-50/50 transition">
+                    <td className="px-6 py-4 font-medium text-gray-800">{u.full_name}</td>
+                    <td className="px-6 py-4">
+                      <select
+                        value={u.role}
+                        onChange={(e) => updateRole(u.id, e.target.value)}
+                        className="text-xs border border-gray-200 rounded-xl px-3 py-1.5 bg-white focus:ring-2 focus:ring-primary-500/20 outline-none"
+                      >
+                        <option value="client">Client</option>
+                        <option value="provider">Prestataire</option>
+                        <option value="admin">Admin</option>
+                      </select>
+                    </td>
+                    <td className="px-6 py-4 text-gray-500">{u.location || '—'}</td>
+                    <td className="px-6 py-4 text-right">
+                      <button
+                        onClick={() => deleteUser(u.id)}
+                        className="p-2 rounded-xl hover:bg-red-50 text-gray-400 hover:text-red-600 transition"
+                      >
+                        <HiTrash size={18} />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+                {users.length === 0 && (
+                  <tr>
+                    <td colSpan={4} className="px-6 py-12 text-center text-gray-400">
+                      Aucun utilisateur trouvé.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>

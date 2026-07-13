@@ -1,4 +1,3 @@
-// src/components/ui/Navbar.tsx
 'use client'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -18,57 +17,59 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="bg-white/80 backdrop-blur-md sticky top-0 z-50 border-b border-gray-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16 items-center">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">AQ</div>
-            <span className="font-bold text-xl text-primary-800">Aide<span className="text-accent-500">Quotidienne</span></span>
-          </Link>
-
-          {/* Liens desktop */}
-          <div className="hidden md:flex items-center gap-6">
-            <Link href="/recherche" className="text-gray-600 hover:text-primary-600 font-medium transition">Rechercher</Link>
-            {user ? (
-              <>
-                <Link href="/dashboard/client" className="text-gray-600 hover:text-primary-600">Tableau de bord</Link>
-                <Link href="/messages" className="text-gray-600 hover:text-primary-600">Messages</Link>
-                <div className="flex items-center gap-3">
-                  <span className="text-sm text-gray-500">{profile?.full_name}</span>
-                  <Button variant="ghost" size="sm" onClick={handleLogout}>Déconnexion</Button>
-                </div>
-              </>
-            ) : (
-              <div className="flex items-center gap-3">
-                <Link href="/auth/login"><Button variant="ghost" size="sm">Connexion</Button></Link>
-                <Link href="/auth/signup"><Button size="sm">Inscription</Button></Link>
-              </div>
-            )}
+    <nav className="sticky top-3 z-50 mx-auto max-w-7xl px-4 mt-3">
+      <div className="bg-white/70 backdrop-blur-2xl border border-white/80 shadow-lg shadow-gray-200/50 rounded-3xl px-6 py-3 flex justify-between items-center">
+        {/* Logo */}
+        <Link href="/" className="flex items-center gap-2 group">
+          <div className="w-10 h-10 bg-gradient-to-br from-primary-600 to-accent-500 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-md group-hover:shadow-lg transition">
+            AQ
           </div>
+          <span className="font-bold text-xl text-primary-800">
+            Aide<span className="text-accent-500">Quotidienne</span>
+          </span>
+        </Link>
 
-          {/* Bouton menu mobile */}
-          <button className="md:hidden text-gray-600" onClick={() => setMobileOpen(!mobileOpen)}>
-            {mobileOpen ? <HiX size={28} /> : <HiMenu size={28} />}
-          </button>
+        {/* Liens desktop */}
+        <div className="hidden md:flex items-center gap-6 text-sm font-medium">
+          <Link href="/recherche" className="text-gray-600 hover:text-primary-600 transition">Rechercher</Link>
+          {user ? (
+            <>
+              <Link href="/dashboard/client" className="text-gray-600 hover:text-primary-600">Tableau de bord</Link>
+              <Link href="/messages" className="text-gray-600 hover:text-primary-600">Messages</Link>
+              <div className="flex items-center gap-4 ml-2">
+                <span className="text-gray-700">{profile?.full_name}</span>
+                <Button variant="ghost" size="sm" onClick={handleLogout}>Déconnexion</Button>
+              </div>
+            </>
+          ) : (
+            <div className="flex items-center gap-3">
+              <Link href="/auth/login"><Button variant="ghost" size="sm">Connexion</Button></Link>
+              <Link href="/auth/signup"><Button size="sm">Inscription</Button></Link>
+            </div>
+          )}
         </div>
+
+        {/* Mobile toggle */}
+        <button className="md:hidden text-gray-600" onClick={() => setMobileOpen(!mobileOpen)}>
+          {mobileOpen ? <HiX size={24} /> : <HiMenu size={24} />}
+        </button>
       </div>
 
       {/* Menu mobile */}
       {mobileOpen && (
-        <div className="md:hidden border-t bg-white">
-          <div className="px-4 py-3 space-y-2">
-            <Link href="/recherche" className="block py-2 text-gray-600">Rechercher</Link>
+        <div className="mt-2 mx-2 bg-white/90 backdrop-blur-xl rounded-2xl shadow-2xl p-5 md:hidden">
+          <div className="flex flex-col gap-3 text-base font-medium">
+            <Link href="/recherche" className="py-2 px-3 rounded-xl hover:bg-gray-50">Rechercher</Link>
             {user ? (
               <>
-                <Link href="/dashboard/client" className="block py-2 text-gray-600">Tableau de bord</Link>
-                <Link href="/messages" className="block py-2 text-gray-600">Messages</Link>
-                <button onClick={handleLogout} className="block w-full text-left py-2 text-gray-600">Déconnexion</button>
+                <Link href="/dashboard/client" className="py-2 px-3 rounded-xl hover:bg-gray-50">Tableau de bord</Link>
+                <Link href="/messages" className="py-2 px-3 rounded-xl hover:bg-gray-50">Messages</Link>
+                <button onClick={handleLogout} className="w-full text-left py-2 px-3 rounded-xl hover:bg-gray-50">Déconnexion</button>
               </>
             ) : (
               <>
-                <Link href="/auth/login" className="block py-2 text-gray-600">Connexion</Link>
-                <Link href="/auth/signup" className="block py-2 text-gray-600">Inscription</Link>
+                <Link href="/auth/login" className="py-2 px-3 rounded-xl hover:bg-gray-50">Connexion</Link>
+                <Link href="/auth/signup" className="py-2 px-3 rounded-xl hover:bg-gray-50">Inscription</Link>
               </>
             )}
           </div>

@@ -7,7 +7,7 @@ import { createClient } from '@/lib/supabase/client'
 import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import { toast } from 'react-hot-toast'
-import { HiCalendar, HiClock, HiLocationMarker, HiPhone } from 'react-icons/hi'
+import { HiCalendar, HiClock, HiLocationMarker } from 'react-icons/hi'
 
 export default function BookingRequestForm({ providerId }: { providerId: string }) {
   const supabase = createClient()
@@ -42,11 +42,9 @@ export default function BookingRequestForm({ providerId }: { providerId: string 
 
     if (error) {
       toast.error('Erreur lors de la réservation.')
-      console.error(error)
     } else {
       toast.success('Réservation envoyée avec succès !')
       setShowForm(false)
-      // Réinitialiser les champs
       setScheduledDate('')
       setScheduledTime('')
       setAddress('')
@@ -62,7 +60,7 @@ export default function BookingRequestForm({ providerId }: { providerId: string 
           <HiCalendar className="mr-2" /> Réserver un service
         </Button>
       ) : (
-        <form onSubmit={handleSubmit} className="bg-gray-50 p-4 rounded-xl border space-y-3 mt-4 md:mt-0">
+        <form onSubmit={handleSubmit} className="bg-gray-50/80 backdrop-blur-md rounded-2xl p-5 border border-white/60 space-y-4">
           <Input
             label="Date souhaitée"
             type="date"
@@ -86,18 +84,18 @@ export default function BookingRequestForm({ providerId }: { providerId: string 
             onChange={(e) => setAddress(e.target.value)}
           />
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5 ml-1">Notes</label>
             <textarea
-              className="input-field"
+              className="w-full px-5 py-3.5 bg-white border border-gray-200 rounded-2xl text-gray-700 placeholder-gray-400 outline-none focus:border-primary-400 focus:ring-4 focus:ring-primary-500/10 transition"
               rows={3}
               placeholder="Précisez votre besoin..."
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
             />
           </div>
-          <div className="flex gap-2">
+          <div className="flex gap-3">
             <Button type="submit" isLoading={loading} className="flex-1">
-              Confirmer la demande
+              Confirmer
             </Button>
             <Button variant="ghost" type="button" onClick={() => setShowForm(false)}>
               Annuler
