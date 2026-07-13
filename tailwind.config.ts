@@ -21,7 +21,6 @@ const config: Config = {
           500: '#f97316',
           600: '#ea580c',
         },
-        surface: '#f8fafc',
       },
       animation: {
         'fade-in': 'fadeIn 0.5s ease-in-out',

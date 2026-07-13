@@ -1,11 +1,28 @@
 // src/middleware.ts
-import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs'
+import { createServerClient } from '@supabase/ssr'
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export async function middleware(req: NextRequest) {
   const res = NextResponse.next()
-  const supabase = createMiddlewareClient({ req, res })
+
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        get(name: string) {
+          return req.cookies.get(name)?.value
+        },
+        set(name: string, value: string, options: any) {
+          res.cookies.set({ name, value, ...options })
+        },
+        remove(name: string, options: any) {
+          res.cookies.set({ name, value: '', ...options })
+        },
+      },
+    }
+  )
 
   const {
     data: { session },
@@ -13,7 +30,7 @@ export async function middleware(req: NextRequest) {
 
   const { pathname } = req.nextUrl
 
-  // Routes protégées : /dashboard, /messages, /admin
+  // Routes protégées
   if (
     pathname.startsWith('/dashboard') ||
     pathname.startsWith('/messages') ||
@@ -22,7 +39,6 @@ export async function middleware(req: NextRequest) {
     if (!session) {
       return NextResponse.redirect(new URL('/auth/login', req.url))
     }
-    // Vérification du rôle admin pour les routes /admin
     if (pathname.startsWith('/admin')) {
       const { data: profile } = await supabase
         .from('profiles')

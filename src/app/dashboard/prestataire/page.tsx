@@ -22,22 +22,24 @@ export default function ProviderDashboard() {
   const [editingService, setEditingService] = useState<any>(null)
 
   useEffect(() => {
-    if (!profile) return
+    if (!profile?.id) return
     fetchData()
   }, [profile])
 
   async function fetchData() {
     setLoading(true)
+    if (!profile?.id) return
+
     const { data: bookingsData } = await supabase
       .from('bookings')
       .select('*, client:client_id(full_name), service:service_id(title)')
-      .eq('provider_id', profile?.id)
+      .eq('provider_id', profile.id)
       .order('created_at', { ascending: false })
 
     const { data: servicesData } = await supabase
       .from('services')
       .select('*, categories(name)')
-      .eq('provider_id', profile?.id)
+      .eq('provider_id', profile.id)
       .order('created_at', { ascending: false })
 
     setBookings(bookingsData || [])
@@ -83,16 +85,13 @@ export default function ProviderDashboard() {
     <div className="max-w-6xl mx-auto px-4 py-8 animate-fade-in">
       <h1 className="text-3xl font-bold text-primary-800 mb-6">Tableau de bord prestataire</h1>
 
-      {/* Onglets */}
       <div className="flex gap-2 mb-6">
         {(['bookings', 'services'] as const).map((tab) => (
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`px-4 py-2 rounded-full text-sm font-medium transition ${
-              activeTab === tab
-                ? 'bg-primary-600 text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              activeTab === tab ? 'bg-primary-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
           >
             {tab === 'bookings' ? 'Réservations' : 'Mes services'}
@@ -100,7 +99,6 @@ export default function ProviderDashboard() {
         ))}
       </div>
 
-      {/* Réservations */}
       {activeTab === 'bookings' && (
         <div>
           {loading ? (
@@ -135,7 +133,6 @@ export default function ProviderDashboard() {
         </div>
       )}
 
-      {/* Services */}
       {activeTab === 'services' && (
         <div>
           <div className="flex justify-between items-center mb-4">

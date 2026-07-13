@@ -20,7 +20,7 @@ export default function ChatRoom() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (!bookingId || !user) return
+    if (!bookingId || !user) return // Protection
 
     // Charger les messages existants
     supabase
@@ -55,18 +55,18 @@ export default function ChatRoom() {
     }
   }, [bookingId, user])
 
-  // Scroll automatique vers le bas
+  // Scroll automatique
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
   const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!newMessage.trim()) return
+    if (!newMessage.trim() || !user) return
 
     const { error } = await supabase.from('messages').insert({
       booking_id: bookingId as string,
-      sender_id: user!.id,
+      sender_id: user.id,
       content: newMessage.trim(),
       message_type: 'text',
     })

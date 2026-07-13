@@ -24,7 +24,6 @@ export default function SignupPage() {
     setLoading(true)
     setErrorMsg('')
 
-    // 1. Créer l'utilisateur
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
@@ -38,7 +37,6 @@ export default function SignupPage() {
       return
     }
 
-    // 2. Créer le profil
     const { error: profileError } = await supabase.from('profiles').insert({
       id: data.user.id,
       full_name: fullName,
@@ -49,7 +47,7 @@ export default function SignupPage() {
       setErrorMsg(profileError.message)
       toast.error('Erreur lors de la création du profil')
     } else {
-      toast.success('Compte créé avec succès ! Vérifiez votre email si nécessaire.')
+      toast.success('Compte créé avec succès !')
       router.push('/auth/login')
     }
     setLoading(false)
@@ -92,16 +90,18 @@ export default function SignupPage() {
               <button
                 type="button"
                 onClick={() => setRole('client')}
-                className={`flex-1 py-2 rounded-xl border text-sm font-medium transition
-                  ${role === 'client' ? 'bg-primary-600 text-white border-primary-600' : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'}`}
+                className={`flex-1 py-2 rounded-xl border text-sm font-medium transition ${
+                  role === 'client' ? 'bg-primary-600 text-white border-primary-600' : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
+                }`}
               >
                 Client
               </button>
               <button
                 type="button"
                 onClick={() => setRole('provider')}
-                className={`flex-1 py-2 rounded-xl border text-sm font-medium transition
-                  ${role === 'provider' ? 'bg-primary-600 text-white border-primary-600' : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'}`}
+                className={`flex-1 py-2 rounded-xl border text-sm font-medium transition ${
+                  role === 'provider' ? 'bg-primary-600 text-white border-primary-600' : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'
+                }`}
               >
                 Prestataire
               </button>

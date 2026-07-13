@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react'
 import { createClient } from '@/lib/supabase/client'
 import { useAuth } from '@/lib/hooks/useAuth'
 import { useRouter } from 'next/navigation'
-import { HiTrash, HiShieldCheck } from 'react-icons/hi'
+import { HiTrash } from 'react-icons/hi'
 import { toast } from 'react-hot-toast'
 
 export default function AdminUsersPage() {
@@ -41,9 +41,7 @@ export default function AdminUsersPage() {
 
   const deleteUser = async (userId: string) => {
     if (!confirm('Supprimer cet utilisateur ? Cette action est irréversible.')) return
-    const { error } = await supabase.auth.admin.deleteUser(userId) // nécessite service_role en backend
-    // Alternative : anonymiser
-    toast.error('Fonction nécessite clé admin côté serveur (à implémenter)')
+    toast.error('Fonction nécessite la clé admin (à implémenter)')
   }
 
   return (
@@ -57,7 +55,6 @@ export default function AdminUsersPage() {
             <thead className="bg-gray-50">
               <tr>
                 <th className="px-4 py-3 text-left">Nom</th>
-                <th className="px-4 py-3 text-left">Email (via auth)</th>
                 <th className="px-4 py-3 text-left">Rôle</th>
                 <th className="px-4 py-3 text-left">Localisation</th>
                 <th className="px-4 py-3">Actions</th>
@@ -67,7 +64,6 @@ export default function AdminUsersPage() {
               {users.map((u) => (
                 <tr key={u.id} className="border-t">
                   <td className="px-4 py-3">{u.full_name}</td>
-                  <td className="px-4 py-3 text-gray-500">—</td>
                   <td className="px-4 py-3">
                     <select
                       value={u.role}

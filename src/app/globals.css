@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply bg-surface text-gray-800 antialiased;
+    @apply bg-gray-50 text-gray-800 antialiased;
   }
 }
 

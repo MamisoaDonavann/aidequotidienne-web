@@ -4,12 +4,11 @@ import { createServerClientFromCookies } from '@/lib/supabase/server'
 import ServiceCard from '@/components/providers/ServiceCard'
 import ReviewList from '@/components/reviews/ReviewList'
 import BookingRequestForm from '@/components/booking/BookingRequestForm'
-import { HiLocationMarker, HiCalendar } from 'react-icons/hi'
+import { HiLocationMarker } from 'react-icons/hi'
 
 export default async function ProviderProfilePage({ params }: { params: { id: string } }) {
-  const supabase = createServerClientFromCookies()
-  
-  // Récupération du profil du prestataire
+  const supabase = await createServerClientFromCookies() // ← await
+
   const { data: profile } = await supabase
     .from('profiles')
     .select('*')
@@ -19,21 +18,18 @@ export default async function ProviderProfilePage({ params }: { params: { id: st
 
   if (!profile) notFound()
 
-  // Services du prestataire
   const { data: services } = await supabase
     .from('services')
     .select('*, categories(name, slug)')
     .eq('provider_id', profile.id)
     .eq('active', true)
 
-  // Avis reçus
   const { data: reviews } = await supabase
     .from('reviews')
     .select('*, reviewer:reviewer_id(full_name, avatar_url)')
     .eq('provider_id', profile.id)
     .order('created_at', { ascending: false })
 
-  // Note moyenne
   const avgRating =
     reviews && reviews.length > 0
       ? Math.round((reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length) * 10) / 10

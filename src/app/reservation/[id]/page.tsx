@@ -6,7 +6,8 @@ import Link from 'next/link'
 import { HiCalendar, HiLocationMarker } from 'react-icons/hi'
 
 export default async function ReservationDetailPage({ params }: { params: { id: string } }) {
-  const supabase = createServerClientFromCookies()
+  const supabase = await createServerClientFromCookies() // ← await
+
   const { data: booking } = await supabase
     .from('bookings')
     .select('*, client:client_id(full_name), provider:provider_id(full_name), service:service_id(title)')

@@ -15,8 +15,9 @@ export default function MessagesPage() {
 
   useEffect(() => {
     if (!user) return
+    const userId = user.id // TypeScript comprend maintenant que ce n'est pas null
+
     async function fetchConversations() {
-      // Récupère les bookings où l'utilisateur est client ou prestataire et qui ont des messages (ou non)
       const { data } = await supabase
         .from('bookings')
         .select(`
@@ -24,9 +25,9 @@ export default function MessagesPage() {
           status,
           client:client_id(full_name),
           provider:provider_id(full_name),
-          messages:messages(id)  // juste pour savoir s'il y en a
+          messages:messages(id)
         `)
-        .or(`client_id.eq.${user.id},provider_id.eq.${user.id}`)
+        .or(`client_id.eq.${userId},provider_id.eq.${userId}`)
         .order('updated_at', { ascending: false })
 
       setConversations(data || [])
