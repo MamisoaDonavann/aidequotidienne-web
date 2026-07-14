@@ -1,7 +1,7 @@
 // src/app/auth/login/page.tsx
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/client'
@@ -10,7 +10,8 @@ import Button from '@/components/ui/Button'
 import Input from '@/components/ui/Input'
 import { toast } from 'react-hot-toast'
 
-export default function LoginPage() {
+// Composant interne qui utilise useSearchParams
+function LoginForm() {
   const supabase = createClient()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -20,7 +21,6 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
 
-  // Gestion des messages de redirection (confirmation d'email)
   const confirmed = searchParams.get('confirmed')
   const errorParam = searchParams.get('error')
 
@@ -88,7 +88,6 @@ export default function LoginPage() {
           </Button>
         </form>
 
-        {/* Renvoyer l'email de confirmation */}
         <div className="mt-4 text-center">
           <p className="text-sm text-gray-500">
             Vous n'avez pas reçu l'email de confirmation ?{' '}
@@ -129,5 +128,18 @@ export default function LoginPage() {
         </p>
       </div>
     </div>
+  )
+}
+
+// Composant principal avec Suspense
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-[80vh] flex items-center justify-center">
+        <div className="w-8 h-8 border-4 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    }>
+      <LoginForm />
+    </Suspense>
   )
 }
